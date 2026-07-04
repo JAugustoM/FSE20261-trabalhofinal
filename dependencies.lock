@@ -87,6 +87,26 @@ dependencies:
     - esp32s2
     - esp32s3
     version: 2.1.1
+  espressif/cjson:
+    component_hash: e788323270d90738662d66fffa910bfe1fba019bba087f01557e70c40485b469
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.7.19~2
+  espressif/mqtt:
+    component_hash: ffdad5659706b4dc14bc63f8eb73ef765efa015bf7e9adf71c813d52a2dc9342
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.0
   idf:
     source:
       type: idf
@@ -94,7 +114,9 @@ dependencies:
 direct_dependencies:
 - esp-idf-lib/bmp280
 - esp-idf-lib/dht
+- espressif/cjson
+- espressif/mqtt
 - idf
-manifest_hash: 881edbccfac2bb870bf6e78d95473ad102939039cc7b62c5aa950281e415d847
+manifest_hash: fc186df66dc8ad60e585fbbcb5f97756c7a39aa1aac7777a82a95fc46f2784a8
 target: esp32
 version: 2.0.0
