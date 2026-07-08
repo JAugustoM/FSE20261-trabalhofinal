@@ -3,6 +3,7 @@
 #include "esp_event_base.h"
 #include "esp_log.h"
 #include "freertos/idf_additions.h"
+#include "mdns.h"
 #include "portmacro.h"
 
 #include "credentials.h"
@@ -28,6 +29,19 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     default:
       break;
   }
+}
+
+void initialize_mdns() {
+    esp_err_t err = mdns_init();
+    if (err) {
+        ESP_LOGE("MDNS", "Failed to initialize mDNS: %s", esp_err_to_name(err));
+        return;
+    }
+    
+    mdns_hostname_set("estacao-esp32");
+    mdns_instance_name_set("Estacao ESP32");
+    
+    ESP_LOGI("MDNS", "mDNS initialized successfully");
 }
 
 esp_mqtt_client_handle_t connect_mqtt() {

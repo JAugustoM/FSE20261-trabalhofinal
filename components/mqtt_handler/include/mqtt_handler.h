@@ -11,6 +11,7 @@ typedef struct {
 } sensor_data;
 
 extern esp_mqtt_client_handle_t connect_mqtt();
+extern void initialize_mdns();
 extern void publish_sensor_data(esp_mqtt_client_handle_t client, const sensor_data* data);
 
 #endif
