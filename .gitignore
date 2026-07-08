@@ -3,3 +3,5 @@
 /.cache
 /.vscode
 /sdkconfig.old
+
+credentials.h
