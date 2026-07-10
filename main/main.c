@@ -22,8 +22,8 @@ void upload_weather_data_task(void *params) {
     wu_init(CONFIG_ESP_WU_STATION_ID, CONFIG_ESP_WU_STATION_KEY);
 
     // mock some data for testing
-    wu_data_t mock_data = {
-      .temperature = 25.0f
+    sensor_data_t mock_data = {
+      .temp = 25.0f
     };
 
     while(true) {

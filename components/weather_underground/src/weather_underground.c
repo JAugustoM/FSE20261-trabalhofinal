@@ -14,12 +14,12 @@ static char s_station_key[32];
 // struct for imperial data
 typedef struct {
     float tempeture_f;
-} wu_imperial_data_t;
+} wu_data_t;
 
 // metric to imperial math
-static wu_imperial_data_t convert_metric_to_imperial(const wu_data_t *data) {
-    wu_imperial_data_t imperial;
-    imperial.tempeture_f = (data->temperature * 9.0f / 5.0f) + 32.0f;
+static wu_data_t convert_metric_to_imperial(const sensor_data_t *data) {
+    wu_data_t imperial;
+    imperial.tempeture_f = (data->temp * 9.0f / 5.0f) + 32.0f;
     return imperial;
 }
 
@@ -29,11 +29,11 @@ void wu_init(const char* station_id, const char* station_key) {
     ESP_LOGI(TAG, "Iniciando estação com ID: %s", s_station_id);
 }
 
-esp_err_t wu_send_data(const wu_data_t *data) {
-    wu_imperial_data_t imperial = convert_metric_to_imperial(data);
+esp_err_t wu_send_data(const sensor_data_t *data) {
+    wu_data_t imperial = convert_metric_to_imperial(data);
 
     ESP_LOGI(TAG, "--------- Dados Meteorológicos ---------");
-    ESP_LOGI(TAG, "Temperatura:     %.2f C   -> %.2f F", data->temperature, imperial.tempeture_f);
+    ESP_LOGI(TAG, "Temperatura:     %.2f C   -> %.2f F", data->temp, imperial.tempeture_f);
     ESP_LOGI(TAG, "----------------------------------------");
 
     char url[512];
