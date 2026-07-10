@@ -1,0 +1,39 @@
+menu "WiFi and Weather Station Configuration"
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "ssid"
+        help
+            Nome da rede WiFi.
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "password"
+        help
+            Senha do WiFi (WPA or WPA2).
+
+    config ESP_MAXIMUM_RETRY
+        int "Maximum connection retries"
+        default 5
+        help
+            Configure o valor máximo de tentativas de conexão.
+            
+    config ESP_WU_STATION_ID
+        string "Weather Underground Station ID"
+        default "STATION_ID"
+        help
+            ID da estação.
+
+    config ESP_WU_STATION_KEY
+        string "Weather Underground Station Key"
+        default "STATION_KEY"
+        help
+            Senha gerada para a estação.
+
+    config ESP_WU_UPDATE_INTERVAL_MS
+        int "Update Interval (ms)"
+        default 60000
+        help
+            Tempo de espera entre cada envio para o Weather Underground (Default : 60s).
+            
+endmenu
