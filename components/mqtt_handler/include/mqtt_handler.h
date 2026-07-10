@@ -2,16 +2,11 @@
 #define MQTT_H
 
 #include "mqtt_client.h"
-
-typedef struct {
-  float temp;
-  float pres;
-  float hum;  
-  int   lum;
-} sensor_data;
+#include "sensor_data.h"
 
 extern esp_mqtt_client_handle_t connect_mqtt();
 extern void initialize_mdns();
-extern void publish_sensor_data(esp_mqtt_client_handle_t client, const sensor_data* data);
+extern void publish_sensor_data(esp_mqtt_client_handle_t client,
+                                const sensor_data_t *data);
 
 #endif
