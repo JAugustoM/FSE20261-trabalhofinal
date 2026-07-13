@@ -79,10 +79,11 @@ void publish_sensor_data(esp_mqtt_client_handle_t client,
     return;
   }
 
-  cJSON_AddNumberToObject(root, "temp", data->temp);
-  cJSON_AddNumberToObject(root, "pres", data->pres);
-  cJSON_AddNumberToObject(root, "hum", data->hum);
+  cJSON_AddNumberToObject(root, "temp (°C)", data->temp);
+  cJSON_AddNumberToObject(root, "pres (Pa)", data->pres);
+  cJSON_AddNumberToObject(root, "hum (%)", data->hum);
   cJSON_AddNumberToObject(root, "lum", data->lum);
+  cJSON_AddBoolToObject(root, "is_raining", data->is_raining);
 
   char *json_string = cJSON_PrintUnformatted(root);
   if (json_string != NULL) {

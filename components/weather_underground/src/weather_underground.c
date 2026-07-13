@@ -12,16 +12,21 @@ static char s_station_key[32];
 #define WU_BASE_URL                                                            \
   "https://rtupdate.wunderground.com/weatherstation/updateweatherstation.php"
 
-// struct for imperial data
 typedef struct {
   float tempeture_f;
+  float pressure_in;
+  float solar_radiation;
 } wu_data_t;
 
-// metric to imperial math
-static wu_data_t convert_metric_to_imperial(const sensor_data_t *data) {
-  wu_data_t imperial;
-  imperial.tempeture_f = (data->temp * 9.0f / 5.0f) + 32.0f;
-  return imperial;
+static wu_data_t convert_to_wu_data(const sensor_data_t *data) {
+  wu_data_t wu_data;
+  wu_data.tempeture_f = (data->temp * 9.0f / 5.0f) + 32.0f;
+  wu_data.pressure_in = data->pres / 3386.389f;
+
+  float luz_percentual = (float)data->lum / 4095.0f;
+  wu_data.solar_radiation = luz_percentual * 1000.0f;
+
+  return wu_data;
 }
 
 void wu_init(const char *station_id, const char *station_key) {
@@ -31,18 +36,23 @@ void wu_init(const char *station_id, const char *station_key) {
 }
 
 esp_err_t wu_send_data(const sensor_data_t *data) {
-  wu_data_t imperial = convert_metric_to_imperial(data);
+  wu_data_t wu_data = convert_to_wu_data(data);
 
   ESP_LOGI(TAG, "--------- Dados Meteorológicos ---------");
   ESP_LOGI(TAG, "Temperatura:     %.2f C   -> %.2f F", data->temp,
-           imperial.tempeture_f);
+           wu_data.tempeture_f);
   ESP_LOGI(TAG, "----------------------------------------");
 
   char url[512];
   snprintf(url, sizeof(url),
-           "%s?ID=%s&PASSWORD=%s&dateutc=now&action=updateraw&tempf=%.1f&"
-           "realtime=1&rtfreq=30",
-           WU_BASE_URL, s_station_id, s_station_key, imperial.tempeture_f);
+           "%s?ID=%s&PASSWORD=%s&dateutc=now&action=updateraw"
+           "&tempf=%.2f"
+           "&humidity=%.0f"
+           "&baromin=%.2f"
+           "&solarradiation=%.2f"
+           "&realtime=1&rtfreq=30",
+           WU_BASE_URL, s_station_id, s_station_key, wu_data.tempeture_f,
+           data->hum, wu_data.pressure_in, wu_data.solar_radiation);
 
   esp_http_client_config_t config = {
       .url = url,

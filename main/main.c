@@ -7,6 +7,7 @@
 #include "ldr_handler.h"
 #include "mqtt_handler.h"
 #include "nvs_flash.h"
+#include "rain_handler.h"
 #include "sensor_data.h"
 #include "weather_underground.h"
 #include "wifi_handler.h"
@@ -17,24 +18,22 @@ static const char *TAG = "estacao_esp";
 
 SemaphoreHandle_t wifi_connection_semaphore;
 SemaphoreHandle_t data_mutex;
-SemaphoreHandle_t
-    data_ready_semaphore; // Novo semáforo para aguardar a 1ª leitura
+SemaphoreHandle_t data_ready_semaphore;
 
 sensor_data_t data = {
     .temp = 0,
     .hum = 0,
     .pres = 0,
     .lum = 0,
+    .is_raining = false,
 };
 
 void upload_weather_data_task(void *params) {
   if (xSemaphoreTake(wifi_connection_semaphore, portMAX_DELAY)) {
     xSemaphoreGive(wifi_connection_semaphore);
 
-    // Fica bloqueado até a primeira leitura dos sensores ocorrer
     if (xSemaphoreTake(data_ready_semaphore, portMAX_DELAY)) {
-      xSemaphoreGive(
-          data_ready_semaphore); // Libera para a task do MQTT usar também
+      xSemaphoreGive(data_ready_semaphore);
 
       ESP_LOGI(TAG, "WiFi conectado e primeira leitura realizada.");
       wu_init(CONFIG_ESP_WU_STATION_ID, CONFIG_ESP_WU_STATION_KEY);
@@ -61,7 +60,6 @@ void upload_mqtt_data_task(void *params) {
   if (xSemaphoreTake(wifi_connection_semaphore, portMAX_DELAY)) {
     xSemaphoreGive(wifi_connection_semaphore);
 
-    // Fica bloqueado até a primeira leitura dos sensores ocorrer
     if (xSemaphoreTake(data_ready_semaphore, portMAX_DELAY)) {
       xSemaphoreGive(data_ready_semaphore);
 
@@ -83,14 +81,14 @@ void upload_mqtt_data_task(void *params) {
 
 void app_main(void) {
   data_mutex = xSemaphoreCreateMutex();
-  data_ready_semaphore =
-      xSemaphoreCreateBinary(); // Cria o semáforo de dados prontos
+  data_ready_semaphore = xSemaphoreCreateBinary();
 
   ESP_ERROR_CHECK(bmp280_handler_init(BMP280_HANDLER_DEFAULT_SDA,
                                       BMP280_HANDLER_DEFAULT_SCL,
                                       BMP280_HANDLER_DEFAULT_ADDR));
   ESP_ERROR_CHECK(dht_handler_init(DHT_HANDLER_DEFAULT_PIN));
   ESP_ERROR_CHECK(ldr_handler_init(LDR_HANDLER_DEFAULT_PIN));
+  ESP_ERROR_CHECK(rain_handler_init(RAIN_HANDLER_DEFAULT_PIN));
 
   vTaskDelay(pdMS_TO_TICKS(1000));
 
@@ -118,6 +116,7 @@ void app_main(void) {
     float bmp_temp = 0.0f, bmp_pressao = 0.0f;
     float dht_temp = 0.0f, dht_umidade = 0.0f;
     int luz_raw = 0;
+    bool is_raining = false;
 
     if (bmp280_handler_read(&bmp_temp, &bmp_pressao, NULL) == ESP_OK) {
       ESP_LOGI(TAG, "[BMP280] Temp: %.2f C | Pressao: %.2f Pa", bmp_temp,
@@ -134,17 +133,22 @@ void app_main(void) {
       ESP_LOGI(TAG, "[GBK P7] Luminosidade: raw=%d (%d%%)", luz_raw, luz_pct);
     }
 
-    // Protege a gravação na variável global
+    is_raining = rain_handler_is_raining();
+    if (is_raining) {
+      ESP_LOGI(TAG, "[Chuva] Detectada chuva!");
+    } else {
+      ESP_LOGI(TAG, "[Chuva] Sem chuva no momento.");
+    }
+
     if (xSemaphoreTake(data_mutex, portMAX_DELAY)) {
       data.temp = bmp_temp;
       data.pres = bmp_pressao;
       data.hum = dht_umidade;
       data.lum = luz_raw;
+      data.is_raining = is_raining;
       xSemaphoreGive(data_mutex);
     }
 
-    // Se foi a primeira vez que lemos, liberamos as tasks de envio para
-    // começarem a atuar
     if (!primeira_leitura_feita) {
       primeira_leitura_feita = true;
       xSemaphoreGive(data_ready_semaphore);
