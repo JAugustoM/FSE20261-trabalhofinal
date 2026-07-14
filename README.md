@@ -48,7 +48,7 @@ Como a nossa implementação não faz uso de rede móvel, dispensa também o uso
 | **1** | **Módulo Sensor DHT11**     | **Data (OUT):** GPIO 4<br>**VCC:** 3.3V<br>**GND:** GND                  | Protocolo proprietário (1-wire). Responsável pela leitura da Umidade Relativa do ar.                                                             |
 | **1** | **Módulo Sensor LDR**       | **Sinal Analógico (AO):** GPIO 34<br>**VCC:** 3.3V<br>**GND:** GND       | Leitura analógica. Usado para estimar a Radiação Solar / Luminosidade.                                                                           |
 | **1** | **Módulo Sensor de Chuva YL-83**  | **Sinal Digital (DO):** GPIO 18<br>**VCC:** 3.3V (ou 5V)<br>**GND:** GND | Leitura digital (0 ou 1). Placa de detecção de gotas + comparador LM393. Define se está chovendo ou não.                                         |
-| **1** | **Protoboard (Breadboard)** | -                                                                        | Base para a montagem e distribuição de energia (3.3V e GND) para todos os módulos.                                                               |
+| **1** | **Protoboard (Breadboard)** | -                                                                        | Base para a montagem e distribuição de energia (3.3V e GND) para todos os módulos. Alternativamente, utilizar 2 protoboards podem facilitar a montagem |
 | **1** | **Kit de Fios Jumpers**     | -                                                                        | Fios Macho-Macho e Macho-Fêmea para interligar os módulos à placa ESP32 e às trilhas de alimentação da protoboard.                               |
 
 ### Montagem
