@@ -1,4 +1,4 @@
-# TRABALHO FINAL FSE
+# Trabalho Final: Estação Meteorológica
 
 ## Integrantes
 
@@ -54,8 +54,100 @@ Como a nossa implementação não faz uso de rede móvel, dispensa também o uso
 ### Montagem
 
 ![Esquemático](assets/schematic.png)
+Figura 1 - Esquemático de montagem
 
-## Uso
+## Como executar o projeto
 
-[//]: # (Instruções de compilação, instalação, e uso)
-[//]: # (Instruções para configuração de rede)
+### Pré-requisitos
+
+Antes de iniciar, certifique-se de ter:
+
+- Todos os componentes de hardware descritos na seção **Bill of Materials (BoM)**, montados conforme a **Figura 1**.
+- O **ESP-IDF** (versão 5.x ou superior) instalado e configurado.
+  - Consulte o guia oficial de instalação: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/#installation
+
+### Criando uma estação no Weather Underground
+
+Para que a ESP32 envie os dados coletados, é necessário criar uma *Personal Weather Station* e obter suas credenciais.
+
+1. Acesse o site do **[Weather Underground](https://www.wunderground.com/)** e crie uma conta.
+2. Após o login, acesse **My Profile > My Devices**
+3. Clique em **Add New Device**.
+4. Selecione a opção **Other** e clique em **Next**.
+5. Informe o endereço onde a estação está instalada.
+
+Ao concluir, serão geradas duas credenciais:
+
+- **Station ID:** identificador da estação.
+- **Station Key:** chave de autenticação da estação.
+
+> **Aviso:** guarde essas informações, pois elas serão necessárias na etapa de configuração.
+
+### Configurando o projeto
+
+#### WiFi e Estação
+
+As credenciais do WiFi e da Estação são configuradas por meio do **Kconfig**.
+
+Na raiz do projeto, execute:
+
+```bash
+idf.py menuconfig
+```
+
+Em seguida, acesse:
+
+```text
+WiFi and Weather Station Configuration
+```
+
+Preencha as seguintes informações:
+
+- SSID da rede Wi-Fi;
+- Senha da rede Wi-Fi;
+- Station ID;
+- Station Key.
+
+Salve a configuração antes de sair do menu.
+
+#### MQTT
+
+Para configurar as credenciais do MQTT crie o arquivo `credentials.h` com o seguinte conteúdo:
+
+```c
+#ifndef CREDENTIALS_H
+#define CREDENTIALS_H
+
+const char* BROKER_URI = "mqtt://SEU_BROKER";
+const char* MQTT_USER  = "SEU_USUARIO";
+const char* MQTT_PASS  = "SUA_SENHA";
+
+#endif
+```
+
+Substitua os valores de exemplo pelas credenciais do seu broker.
+
+### Compilando o projeto
+
+Após configurar as credenciais, compile o projeto com:
+
+```bash
+idf.py build
+```
+
+### Executando o projeto
+
+Execute o comando:
+
+```bash
+idf.py flash monitor
+```
+
+Durante a execução será possível acompanhar:
+
+- Inicialização da ESP32;
+- Conexão com a rede Wi-Fi;
+- Leitura dos sensores;
+- Comunicação MQTT;
+- Requisições HTTP para o Weather Underground;
+- Logs gerais da aplicação.
