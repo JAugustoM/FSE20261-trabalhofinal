@@ -55,6 +55,12 @@ Como a nossa implementação não faz uso de rede móvel, dispensa também o uso
 
 ![Esquemático](assets/schematic.png)
 
+Pinos usados:
+* LDR -> ADC1_6 (GPIO34)
+* DHT11 -> ADC2_0 (GPIO4)
+* YL83 -> SCK (GPIO18)
+* BMP280 -> SDA (GPIO21), SCL (GPIO22)
+
 ## Uso
 
 [//]: # (Instruções de compilação, instalação, e uso)
