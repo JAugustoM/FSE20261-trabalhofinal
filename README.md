@@ -9,7 +9,7 @@
 | [José Augusto](https://github.com/JAugustoM)   | 231026429 |
 | [Ana Catarina](https://github.com/an4catarina) | 211041099 |
 
-## Sobre
+## 1. Sobre
 
 Este repositório possui a implementação de uma estação meteorológica pessoal (PWS) com base na solução [Open Weather Station](https://github.com/panchazo/open-weather-station). A implementação foi adaptada de forma a utilizar uma ESP32 e no contexto da disciplina de Fundamentos de Sistemas Operacionais da UnB-FTCE.
 
@@ -17,7 +17,7 @@ PWS são estações de monitoramento meteorológico destinadas ao uso pessoal, c
 
 Estudo inicial: [Open Weather Station](https://github.com/Laisczt/FSE-OpenWeatherStation).
 
-### Funcionalidades
+### 1.1 Funcionalidades
 
 * Sensores atmosféricos
   * Pressão atmosférica
@@ -29,9 +29,9 @@ Estudo inicial: [Open Weather Station](https://github.com/Laisczt/FSE-OpenWeathe
 * Integração com a plataforma WUnderground
 * Interface de visualização dos dados em tempo real (MQTT)
 
-## Implementação
+## 2. Implementação
 
-### Diferenças com relação a Open Weather Station
+### 2.1 Diferenças com relação a Open Weather Station
 
 As principais diferenças da nossa implementação em relação a OWS (excluindo componentes específicos, arquitetura), são:
 
@@ -39,7 +39,7 @@ As principais diferenças da nossa implementação em relação a OWS (excluindo
 Como a nossa implementação não faz uso de rede móvel, dispensa também o uso de um dispositivo móvel e conexão Bluetooth, a própria ESP32 é usada para conexão WiFi
 * Não possuimos sensores de velocidade e direção de vento/rajada de vento.
 
-### Bill of Materials (BoM)
+### 2.2 Bill of Materials (BoM)
 
 | Qtd   | Componente                  | Conexões no ESP32 (Pinos)                                                | Função / Descrição                                                                                                                               |
 | :-----:| :----------------------------| :-------------------------------------------------------------------------| :-------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -51,22 +51,24 @@ Como a nossa implementação não faz uso de rede móvel, dispensa também o uso
 | **1** | **Protoboard (Breadboard)** | -                                                                        | Base para a montagem e distribuição de energia (3.3V e GND) para todos os módulos. Alternativamente, utilizar 2 protoboards podem facilitar a montagem |
 | **1** | **Kit de Fios Jumpers**     | -                                                                        | Fios Macho-Macho e Macho-Fêmea para interligar os módulos à placa ESP32 e às trilhas de alimentação da protoboard.                               |
 
-### Montagem
+### 2.3 Montagem
 
 ![Esquemático](assets/schematic.png)
 Figura 1 - Esquemático de montagem
 
-## Como executar o projeto
+## 3. Como executar o projeto
 
-### Pré-requisitos
+### 3.1 Pré-requisitos
 
 Antes de iniciar, certifique-se de ter:
 
-- Todos os componentes de hardware descritos na seção **Bill of Materials (BoM)**, montados conforme a **Figura 1**.
+- Todos os componentes de hardware descritos na seção **2.2 Bill of Materials (BoM)**, montados conforme a **Figura 1**.
 - O **ESP-IDF** (versão 5.x ou superior) instalado e configurado.
-  - Consulte o guia oficial de instalação: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/#installation
+  - Consulte o guia de instalação: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/#installation
+- Um **broker MQTT** instalado. Recomendação: *Eclipse Mosquitto*
+  - Consulte o guia de instalação: https://mosquitto.org/download/
 
-### Criando uma estação no Weather Underground
+### 3.2 Criando uma estação no Weather Underground
 
 Para que a ESP32 envie os dados coletados, é necessário criar uma *Personal Weather Station* e obter suas credenciais.
 
@@ -83,9 +85,54 @@ Ao concluir, serão geradas duas credenciais:
 
 > **Aviso:** guarde essas informações, pois elas serão necessárias na etapa de configuração.
 
-### Configurando o projeto
+### 3.3 Configurando o projeto
 
-#### WiFi e Estação
+### 3.3.1 MQTT
+
+Este projeto utiliza o **Eclipse Mosquitto** como broker MQTT para receber os dados publicados pela ESP32.
+
+#### a) Configurando o broker
+
+Após instalar o Mosquitto, crie um arquivo de configuração chamado `mosquitto.conf` com o seguinte conteúdo:
+
+```conf
+allow_anonymous false
+password_file password 
+```
+
+Em seguida, crie um usuário para autenticação com o seguinte comando:
+
+```bash
+mosquitto_passwd -c password esp32
+```
+
+Será solicitada uma senha para o usuário `esp32`. Essa senha deverá ser utilizada também na configuração da ESP32.
+
+Por fim, inicie o broker utilizando o arquivo de configuração criado:
+
+```bash
+mosquitto -c mosquitto.conf
+```
+#### b) Configurando as credenciais da ESP32
+
+Crie o arquivo `credentials.h` no diretório `components/mqtt_handler` com o seguinte conteúdo:
+
+```c
+#ifndef CREDENTIALS_H
+#define CREDENTIALS_H
+
+const char* BROKER_URI = "mqtt://SEU_BROKER";
+const char* MQTT_USER  = "SEU_USUARIO";
+const char* MQTT_PASS  = "SUA_SENHA";
+
+#endif
+```
+
+Substitua os valores pelos dados do seu broker MQTT.
+
+> **Aviso:** as credenciais definidas em `MQTT_USER` e `MQTT_PASS` devem corresponder exatamente ao usuário e à senha configurados no broker Mosquitto.
+
+### 3.3.2 WiFi e Estação
 
 As credenciais do WiFi e da Estação são configuradas por meio do **Kconfig**.
 
@@ -110,24 +157,7 @@ Preencha as seguintes informações:
 
 Salve a configuração antes de sair do menu.
 
-#### MQTT
-
-Para configurar as credenciais do MQTT crie o arquivo `credentials.h` com o seguinte conteúdo:
-
-```c
-#ifndef CREDENTIALS_H
-#define CREDENTIALS_H
-
-const char* BROKER_URI = "mqtt://SEU_BROKER";
-const char* MQTT_USER  = "SEU_USUARIO";
-const char* MQTT_PASS  = "SUA_SENHA";
-
-#endif
-```
-
-Substitua os valores de exemplo pelas credenciais do seu broker.
-
-### Compilando o projeto
+### 3.4 Compilando o projeto
 
 Após configurar as credenciais, compile o projeto com:
 
@@ -135,7 +165,7 @@ Após configurar as credenciais, compile o projeto com:
 idf.py build
 ```
 
-### Executando o projeto
+### 3.5 Executando o projeto
 
 Execute o comando:
 
