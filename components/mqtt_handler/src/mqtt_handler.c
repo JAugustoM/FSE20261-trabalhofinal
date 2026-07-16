@@ -4,8 +4,11 @@
 #include "esp_log.h"
 #include "mdns.h"
 
-#include "credentials.h"
 #include "mqtt_handler.h"
+
+#define BROKER_URI CONFIG_MQTT_BROKER_URI
+#define MQTT_USER CONFIG_MQTT_USER
+#define MQTT_PASS CONFIG_MQTT_PASS
 
 static const char *TAG = "MQTT_HANDLER";
 

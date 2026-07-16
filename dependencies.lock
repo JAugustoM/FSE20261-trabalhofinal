@@ -120,7 +120,7 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 5.5.2
+    version: 6.0.2
 direct_dependencies:
 - esp-idf-lib/bmp280
 - esp-idf-lib/dht
@@ -130,4 +130,4 @@ direct_dependencies:
 - idf
 manifest_hash: d56179f5c5c9762700929baada463b8d3e784552a92f692322b0a7909683eda4
 target: esp32
-version: 2.0.0
+version: 3.0.0
