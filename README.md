@@ -103,10 +103,10 @@ password_file password
 Em seguida, crie um usuário para autenticação com o seguinte comando:
 
 ```bash
-mosquitto_passwd -c password esp32
+mosquitto_passwd -c password [NOMEUSUARIO]
 ```
 
-Será solicitada uma senha para o usuário `esp32`. Essa senha deverá ser utilizada também na configuração da ESP32.
+Será solicitada uma senha para o usuário. Essa senha deverá ser utilizada também na configuração da ESP32.
 
 Por fim, inicie o broker utilizando o arquivo de configuração criado:
 
@@ -115,20 +115,26 @@ mosquitto -c mosquitto.conf
 ```
 #### b) Configurando as credenciais da ESP32
 
-Crie o arquivo `credentials.h` no diretório `components/mqtt_handler` com o seguinte conteúdo:
+As credenciais do MQTT são configuradas por meio do **Kconfig**.
 
-```c
-#ifndef CREDENTIALS_H
-#define CREDENTIALS_H
+Na raiz do projeto, execute:
 
-const char* BROKER_URI = "mqtt://SEU_BROKER";
-const char* MQTT_USER  = "SEU_USUARIO";
-const char* MQTT_PASS  = "SUA_SENHA";
-
-#endif
+```bash
+idf.py menuconfig
 ```
 
-Substitua os valores pelos dados do seu broker MQTT.
+Em seguida, acesse:
+
+```text
+MQTT Configuration
+```
+
+Preencha as seguintes informações:
+- URI do broker (provavelmente mqtt://192.168.x.x:1883)
+- Usuário MQTT
+- Senha MQTT
+
+Salve a configuração antes de sair do menu.
 
 > **Aviso:** as credenciais definidas em `MQTT_USER` e `MQTT_PASS` devem corresponder exatamente ao usuário e à senha configurados no broker Mosquitto.
 
@@ -154,6 +160,7 @@ Preencha as seguintes informações:
 - Senha da rede Wi-Fi;
 - Station ID;
 - Station Key.
+
 
 Salve a configuração antes de sair do menu.
 
@@ -181,3 +188,9 @@ Durante a execução será possível acompanhar:
 - Comunicação MQTT;
 - Requisições HTTP para o Weather Underground;
 - Logs gerais da aplicação.
+
+Opcionalmente, para visualizar somente os dados telemétricos em JSON, execute em um novo terminal:
+
+```bash
+mosquitto_sub --topic "esp/data" --host localhost --port [PORTA] --username [NOMEUSUARIO] --pw [SENHA]
+```
