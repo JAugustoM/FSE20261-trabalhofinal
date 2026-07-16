@@ -37,3 +37,22 @@ menu "WiFi and Weather Station Configuration"
             Tempo de espera entre cada envio para o Weather Underground (Default : 60s).
             
 endmenu
+menu "MQTT Configuration"
+    config MQTT_BROKER_URI
+        string "MQQT Broker"
+        default "mqtt://x.x.x.x:xxxx"
+        help
+            Endereço do broker MQTT
+    
+    config MQTT_USER
+        string "MQTT User"
+        default "user"
+        help
+            Nome de usuário MQTT
+    
+    config MQTT_PASS
+        string "MQTT Password"
+        default "pass"
+        help
+            Senha de usuário MQTT
+endmenu
