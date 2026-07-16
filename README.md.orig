@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+# TRABALHO FINAL FSE
+=======
 # Trabalho Final: Estação Meteorológica
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
 
 ## Integrantes
 
@@ -9,7 +13,11 @@
 | [José Augusto](https://github.com/JAugustoM)   | 231026429 |
 | [Ana Catarina](https://github.com/an4catarina) | 211041099 |
 
+<<<<<<< HEAD
+## Sobre
+=======
 ## 1. Sobre
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
 
 Este repositório possui a implementação de uma estação meteorológica pessoal (PWS) com base na solução [Open Weather Station](https://github.com/panchazo/open-weather-station). A implementação foi adaptada de forma a utilizar uma ESP32 e no contexto da disciplina de Fundamentos de Sistemas Operacionais da UnB-FTCE.
 
@@ -17,7 +25,11 @@ PWS são estações de monitoramento meteorológico destinadas ao uso pessoal, c
 
 Estudo inicial: [Open Weather Station](https://github.com/Laisczt/FSE-OpenWeatherStation).
 
+<<<<<<< HEAD
+### Funcionalidades
+=======
 ### 1.1 Funcionalidades
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
 
 * Sensores atmosféricos
   * Pressão atmosférica
@@ -29,9 +41,15 @@ Estudo inicial: [Open Weather Station](https://github.com/Laisczt/FSE-OpenWeathe
 * Integração com a plataforma WUnderground
 * Interface de visualização dos dados em tempo real (MQTT)
 
+<<<<<<< HEAD
+## Implementação
+
+### Diferenças com relação a Open Weather Station
+=======
 ## 2. Implementação
 
 ### 2.1 Diferenças com relação a Open Weather Station
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
 
 As principais diferenças da nossa implementação em relação a OWS (excluindo componentes específicos, arquitetura), são:
 
@@ -39,7 +57,11 @@ As principais diferenças da nossa implementação em relação a OWS (excluindo
 Como a nossa implementação não faz uso de rede móvel, dispensa também o uso de um dispositivo móvel e conexão Bluetooth, a própria ESP32 é usada para conexão WiFi
 * Não possuimos sensores de velocidade e direção de vento/rajada de vento.
 
+<<<<<<< HEAD
+### Bill of Materials (BoM)
+=======
 ### 2.2 Bill of Materials (BoM)
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
 
 | Qtd   | Componente                  | Conexões no ESP32 (Pinos)                                                | Função / Descrição                                                                                                                               |
 | :-----:| :----------------------------| :-------------------------------------------------------------------------| :-------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -51,6 +73,22 @@ Como a nossa implementação não faz uso de rede móvel, dispensa também o uso
 | **1** | **Protoboard (Breadboard)** | -                                                                        | Base para a montagem e distribuição de energia (3.3V e GND) para todos os módulos. Alternativamente, utilizar 2 protoboards podem facilitar a montagem |
 | **1** | **Kit de Fios Jumpers**     | -                                                                        | Fios Macho-Macho e Macho-Fêmea para interligar os módulos à placa ESP32 e às trilhas de alimentação da protoboard.                               |
 
+<<<<<<< HEAD
+### Montagem
+
+![Esquemático](assets/schematic.png)
+
+Pinos usados:
+* LDR -> ADC1_6 (GPIO34)
+* DHT11 -> ADC2_0 (GPIO4)
+* YL83 -> SCK (GPIO18)
+* BMP280 -> SDA (GPIO21), SCL (GPIO22)
+
+## Uso
+
+[//]: # (Instruções de compilação, instalação, e uso)
+[//]: # (Instruções para configuração de rede)
+=======
 ### 2.3 Montagem
 
 ![Esquemático](assets/schematic.png)
@@ -181,3 +219,4 @@ Durante a execução será possível acompanhar:
 - Comunicação MQTT;
 - Requisições HTTP para o Weather Underground;
 - Logs gerais da aplicação.
+>>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
