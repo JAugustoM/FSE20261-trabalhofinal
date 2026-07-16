@@ -1,8 +1,0 @@
-idf_component_register(SRCS src/rain_handler.c
-                       INCLUDE_DIRS "include"
-<<<<<<< HEAD
-                       REQUIRES driver esp_driver_gpio
-=======
-                       REQUIRES driver
->>>>>>> a6641104dd53ac50c2a913922ed0bcbce50ec2ea
-)
